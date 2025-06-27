@@ -1,0 +1,87 @@
+// set up
+initialize() {
+	// configurable parameters
+	if (!exists("mig_rt"))
+    defineConstant("mig_rt", 0.1);
+   if (!exists("mut_rt"))
+    defineConstant("mut_rt", 1e-7);
+   if (!exists("sel_coeff"))
+    defineConstant("sel_coeff", 0.1);
+    
+   // mutation rate
+   initializeMutationRate(mut_rt);
+	
+	// m1: neutral, m2: beneficial
+	initializeMutationType("m1", 0.5, "f", 0);
+	initializeMutationType("m2", 0.5, "f", sel_coeff);
+	
+	// g1: uses m1 for all mutations, g2: uses m2 for all mutations
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElementType("g2", m2, 1.0);
+	
+	// uniform chromosome with single causal locus in center
+	initializeGenomicElement(g1, 0, 1e5-1);
+	initializeRecombinationRate(1e-8);
+}
+
+// create 9 populations of 500 individuals
+1 early() {
+	for (i in 0:8) sim.addSubpop(i, 1000);
+	subpops = sim.subpopulations;
+	
+	for (i in 0:8) {
+		row = asInteger(i/3);
+      col = asInteger(i-(3*row));
+      print(row + ' ' + col);
+      
+      if (row>0) {
+      	subpops[i].setMigrationRates(i-3, mig_rt);
+      }
+      if (row<2) {
+      	subpops[i].setMigrationRates(i+3, mig_rt);
+      }
+      if (col>0) {
+      	subpops[i].setMigrationRates(i-1, mig_rt);
+      }
+      if (col<2) {
+      	subpops[i].setMigrationRates(i+1, mig_rt);
+      }
+	}
+}
+
+// randomly assign selected mutation to one individual in middle subpop
+10001 late() {
+	target = sample(p4.genomes, 1);
+	target.addNewDrawnMutation(m2, 5e4);
+}
+
+// neutral effect in middle row populations
+mutationEffect(m2, p3) {
+	return 1.0;
+}
+mutationEffect(m2, p4) {
+	return 1.0;
+}
+mutationEffect(m2, p5) {
+	return 1.0;
+}
+
+// deleterious effect in bottom row populations
+mutationEffect(m2, p6) {
+	return 1/effect;
+}
+
+mutationEffect(m2, p7) {
+	return 1/effect;
+}
+
+mutationEffect(m2, p8) {
+	return 1/effect;
+}
+
+// end simulation
+25000 late() {
+	allIndividuals = sim.subpopulations.individuals;
+	sampledIndividuals = sample(allIndividuals, 450);
+	sampledIndividuals.genomes.outputVCF();
+}
