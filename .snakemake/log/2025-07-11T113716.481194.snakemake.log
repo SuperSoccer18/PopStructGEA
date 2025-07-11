@@ -1,0 +1,50 @@
+Assuming unrestricted shared filesystem usage.
+None
+host: MacBook-Pro-2.local
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job                    count
+-------------------  -------
+all                        1
+run_slim_simulation        2
+total                      3
+
+Select jobs to execute...
+Execute 1 jobs...
+[Fri Jul 11 11:37:16 2025]
+localrule run_slim_simulation:
+    output: results/mig0.05_sel0.1_rep1.vcf
+    jobid: 1
+    reason: Missing output files: results/mig0.05_sel0.1_rep1.vcf
+    wildcards: mig_rt=0.05, sel_coeff=0.1, rep=1
+    resources: tmpdir=/var/folders/4r/nl64zt_91g16k0nmcv2yjlsh0000gn/T
+Select jobs to execute...
+[Fri Jul 11 11:37:28 2025]
+Finished jobid: 1 (Rule: run_slim_simulation)
+1 of 3 steps (33%) done
+Execute 1 jobs...
+[Fri Jul 11 11:37:28 2025]
+localrule run_slim_simulation:
+    output: results/mig0.1_sel0.1_rep1.vcf
+    jobid: 2
+    reason: Missing output files: results/mig0.1_sel0.1_rep1.vcf
+    wildcards: mig_rt=0.1, sel_coeff=0.1, rep=1
+    resources: tmpdir=/var/folders/4r/nl64zt_91g16k0nmcv2yjlsh0000gn/T
+[Fri Jul 11 11:37:41 2025]
+Finished jobid: 2 (Rule: run_slim_simulation)
+2 of 3 steps (67%) done
+Select jobs to execute...
+Execute 1 jobs...
+[Fri Jul 11 11:37:41 2025]
+localrule all:
+    input: results/mig0.05_sel0.1_rep1.vcf, results/mig0.1_sel0.1_rep1.vcf
+    jobid: 0
+    reason: Input files updated by another job: results/mig0.05_sel0.1_rep1.vcf, results/mig0.1_sel0.1_rep1.vcf
+    resources: tmpdir=/var/folders/4r/nl64zt_91g16k0nmcv2yjlsh0000gn/T
+[Fri Jul 11 11:37:41 2025]
+Finished jobid: 0 (Rule: all)
+3 of 3 steps (100%) done
+Complete log(s): /Users/aaronlee/Desktop/nielsenlab/PopStructGEA/.snakemake/log/2025-07-11T113716.481194.snakemake.log
